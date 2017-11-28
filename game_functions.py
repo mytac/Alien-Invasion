@@ -19,6 +19,9 @@ def check_keydown_events(event,ai_settings,screen,ship,bullets):
 		ship.moving_left=True
 	elif event.key==pygame.K_SPACE:
 		fire_bullets(ai_settings,screen,ship,bullets)
+	elif event.key==pygame.K_q:
+		#按下q退出程序
+		sys.exit()
 
 def check_keyup_events(event,ship):
 	"""响应松开"""

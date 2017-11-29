@@ -2,6 +2,7 @@ import sys
 
 import pygame
 from bullet import Bullet
+from alien import Alien
 
 def fire_bullets(ai_settings,screen,ship,bullets):
 	#创建子弹，并将其加入到编组bullets中
@@ -44,7 +45,7 @@ def check_events(ai_settings,screen,ship,bullets):
 		elif event.type==pygame.KEYUP:
 			check_keyup_events(event,ship)
 
-def update_screen(ai_settings,screen,ship,alien,bullets):
+def update_screen(ai_settings,screen,ship,aliens,bullets):
 	"""更新屏幕上的图像，并切换到新屏幕"""
 
 	#每次循环都重绘屏幕
@@ -52,9 +53,26 @@ def update_screen(ai_settings,screen,ship,alien,bullets):
 	for bullet in bullets.sprites():
 		bullet.draw_bullet()
 	ship.blitme()
-	alien.blitme()
+	aliens.draw(screen)
 	# 最近绘制的屏幕可见
 	pygame.display.flip()
+
+def create_fleet(ai_settings,screen,aliens):
+	"""创建外星人群"""
+	#创建一个外星人，并计算一行可容纳多少个外星人
+	#外星人的间距为外星人宽度
+	alien=Alien(ai_settings,screen)
+	alien_width=alien.rect.width
+	avaliable_space_x=ai_settings.screen_width-2*alien_width #除去两边边距
+	number_aliens_x=int(avaliable_space_x/(2*alien_width)) #一行的外星人数量
+
+	#创建第一行外星人
+	for alien_number in range(number_aliens_x):
+		# 创建一个外星人并将其加入当前行
+		alien=Alien(ai_settings,screen)
+		alien.x=(2*alien_number+1)*alien_width
+		alien.rect.x=alien.x
+		aliens.add(alien)
 
 def update_bullets(bullets):
 	"""更新子弹的位置，并删除已消失的子弹"""

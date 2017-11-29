@@ -57,22 +57,31 @@ def update_screen(ai_settings,screen,ship,aliens,bullets):
 	# 最近绘制的屏幕可见
 	pygame.display.flip()
 
+def get_number_aliens_x(ai_settings,alien_width):
+	"""计算每行可容纳多少个外星人"""
+	avaliable_space_x=ai_settings.screen_width-2*alien_width #除去两边边距
+	return int(avaliable_space_x/(2*alien_width)) #一行的外星人数量
+
+def create_alien(ai_settings,screen,aliens,alien_number):
+	"""创建一个外星人并将其放在当前行"""
+	alien=Alien(ai_settings,screen)
+	alien_width=alien.rect.width
+	alien.x=(2*alien_number+1)*alien_width
+	alien.rect.x=alien.x
+	aliens.add(alien)
+
+
 def create_fleet(ai_settings,screen,aliens):
 	"""创建外星人群"""
 	#创建一个外星人，并计算一行可容纳多少个外星人
-	#外星人的间距为外星人宽度
 	alien=Alien(ai_settings,screen)
-	alien_width=alien.rect.width
-	avaliable_space_x=ai_settings.screen_width-2*alien_width #除去两边边距
-	number_aliens_x=int(avaliable_space_x/(2*alien_width)) #一行的外星人数量
-
+	number_aliens_x=get_number_aliens_x(ai_settings,alien.rect.width)
+	
 	#创建第一行外星人
 	for alien_number in range(number_aliens_x):
-		# 创建一个外星人并将其加入当前行
-		alien=Alien(ai_settings,screen)
-		alien.x=(2*alien_number+1)*alien_width
-		alien.rect.x=alien.x
-		aliens.add(alien)
+		create_alien(ai_settings,screen,aliens,alien_number)
+		
+		
 
 def update_bullets(bullets):
 	"""更新子弹的位置，并删除已消失的子弹"""

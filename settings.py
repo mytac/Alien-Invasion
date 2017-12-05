@@ -19,6 +19,6 @@ class Settings():
 		self.bullets_allowed=3 #最大射击数量
 		# 外星人设置
 		self.alien_speed_factor=1
-		self.fleet_drop_speed=50
+		self.fleet_drop_speed=100
 		# fleet_direction为1表示向右移，-1表示向左移
 		self.fleet_direction=1

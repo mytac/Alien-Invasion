@@ -66,7 +66,7 @@ def check_events(ai_settings,screen,stats,play_button,ship,aliens,bullets):
 		elif event.type==pygame.KEYUP:
 			check_keyup_events(event,ship)
 
-def update_screen(ai_settings,screen,stats,ship,aliens,bullets,play_button):
+def update_screen(ai_settings,screen,stats,sb,ship,aliens,bullets,play_button):
 	"""更新屏幕上的图像，并切换到新屏幕"""
 	# 每次循环都重绘屏幕
 	screen.fill(ai_settings.bg_color)
@@ -74,6 +74,8 @@ def update_screen(ai_settings,screen,stats,ship,aliens,bullets,play_button):
 		bullet.draw_bullet()
 	ship.blitme()
 	aliens.draw(screen)
+	# 显示得分
+	sb.show_score()
 	# 如果游戏处于非活动状态，绘制play按钮
 	if not stats.game_active:
 		play_button.draw_button()
@@ -153,10 +155,13 @@ def update_aliens(ai_settings,stats,screen,ship,aliens,bullets):
 	if pygame.sprite.spritecollideany(ship,aliens):
 		ship_hit(ai_settings,stats,screen,ship,aliens,bullets)
 
-def check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets):
+def check_bullet_alien_collisions(ai_settings,screen,stats,sb,ship,aliens,bullets):
 	#检查是否有子弹击中了外星人
 	#如果是这样，删除相应的子弹和外星人
 	collisions=pygame.sprite.groupcollide(bullets,aliens,True,True)
+	if collisions:
+		stats.score+=ai_settings.alien_points
+		sb.prep_score()
 
 	if len(aliens)==0:
 		#删除现有的子弹,加快节奏并新建一群外星人
@@ -164,11 +169,11 @@ def check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets):
 		ai_settings.increase_speed()
 		create_fleet(ai_settings,screen,ship,aliens)
 
-def update_bullets(ai_settings,screen,ship,aliens,bullets):
+def update_bullets(ai_settings,screen,stats,sb,ship,aliens,bullets):
 	"""更新子弹的位置，并删除已消失的子弹"""
 	#更新子弹的位置
 	bullets.update()
-	check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets)
+	check_bullet_alien_collisions(ai_settings,screen,stats,sb,ship,aliens,bullets)
 	#删除已经消失的子弹
 	for bullet in bullets.copy():
 		if bullet.rect.bottom<=0:
